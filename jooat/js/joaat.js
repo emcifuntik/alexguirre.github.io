@@ -16,6 +16,23 @@ function jenkinsOneAtATimeHashSigned(key){
     return hash;
 }
 
+function jenkinsOneAtATimeHashSignedCase(key){
+    var length = key.length;
+    var hash, i;
+
+    for (hash = i = 0; i < length; i++){
+        hash += key.charCodeAt(i);
+        hash += (hash << 10);
+        hash ^= (hash >>> 6);
+    }
+
+    hash += (hash << 3);
+    hash ^= (hash >>> 11);
+    hash += (hash << 15);
+
+    return hash;
+}
+
 function convertToUnsigned(value){
     return (value >>> 0);
 }
@@ -23,12 +40,18 @@ function convertToUnsigned(value){
 function onHashButtonClick() {
     var inputArea = document.getElementById("inputTextArea");
     var outputArea = document.getElementById("outputTextArea");
+    var outputAreaCase = document.getElementById("outputTextAreaCase");
 
     var keyToHash = inputArea.value;
 
     var hashSigned = jenkinsOneAtATimeHashSigned(keyToHash);
     var hashUnsigned = convertToUnsigned(hashSigned);
     var hashHex = hashUnsigned.toString(16).toUpperCase();
+    
+    var hashSignedCase = jenkinsOneAtATimeHashSignedCase(keyToHash);
+    var hashUnsignedCase = convertToUnsigned(hashSignedCase);
+    var hashHexCase = hashUnsignedCase.toString(16).toUpperCase();
 
     outputArea.value = "Signed: " + hashSigned + "\r\nUnsigned: " + hashUnsigned + "\r\nHex: 0x" + hashHex;
+    outputAreaCase.value = "Signed: " + hashSignedCase + "\r\nUnsigned: " + hashUnsignedCase + "\r\nHex: 0x" + hashHexCase;
 }
